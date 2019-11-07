@@ -7,5 +7,6 @@ require (
 	github.com/favclip/genbase v1.0.0 // indirect
 	github.com/favclip/qbg v1.1.1 // indirect
 	github.com/golangci/golangci-lint v1.21.0 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/vektah/gqlparser v1.1.2
 )
