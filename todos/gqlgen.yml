@@ -8,7 +8,11 @@ schema:
 exec:
   filename: generated.go
 model:
-  filename: models_gen.go
+  filename: models/generated.go
+  package: models
+models:
+  Todo:
+    model: github.com/zoncoen-sample/gqlgen/todos/models.Todo
 resolver:
   filename: resolver.go
   type: Resolver
