@@ -21,5 +21,5 @@ func main() {
 	http.Handle("/query", handler.GraphQL(todos.NewExecutableSchema(todos.Config{Resolvers: &todos.Resolver{}})))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
 }
