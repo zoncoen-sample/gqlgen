@@ -20,7 +20,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <App client={client} />
+    <App />
   </ApolloProvider>,
   document.getElementById('main'),
 );

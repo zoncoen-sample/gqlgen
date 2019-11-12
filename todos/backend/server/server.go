@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
+	"github.com/rs/cors"
 	"github.com/zoncoen-sample/gqlgen/todos"
 )
 
@@ -17,9 +18,11 @@ func main() {
 		port = defaultPort
 	}
 
-	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(todos.NewExecutableSchema(todos.Config{Resolvers: &todos.Resolver{}})))
+	mux := http.NewServeMux()
+	mux.Handle("/", handler.Playground("GraphQL playground", "/query"))
+	mux.Handle("/query", handler.GraphQL(todos.NewExecutableSchema(todos.Config{Resolvers: &todos.Resolver{}})))
+	handler := cors.Default().Handler(mux)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+port, handler))
 }

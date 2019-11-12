@@ -1,16 +1,12 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
-import {ApolloClient} from 'apollo-client';
-import {ApolloCache} from 'apollo-cache';
-import {ApolloProvider} from '@apollo/react-hooks';
+import {TodoForm} from './TodoForm';
+import {TodoList} from './TodoList';
 
-export interface AppProps {
-  client: ApolloClient<any>;
-}
-
-export const App = (props: AppProps) => (
+export const App = () => (
   <div>
-    <h2>My first Apollo app 🚀</h2>
+    <h2>Todos</h2>
+    <TodoForm />
+    <TodoList />
   </div>
 );

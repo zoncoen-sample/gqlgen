@@ -8,5 +8,6 @@ require (
 	github.com/favclip/qbg v1.1.1 // indirect
 	github.com/golangci/golangci-lint v1.21.0 // indirect
 	github.com/google/uuid v1.1.1
+	github.com/rs/cors v1.6.0
 	github.com/vektah/gqlparser v1.1.2
 )
