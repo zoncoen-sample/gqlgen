@@ -4,6 +4,10 @@ export GOBIN=$(shell pwd -P)/.bin
 tools:
 	go install github.com/99designs/gqlgen
 
+.PHONY: gen
+gen:
+	@${GOBIN}/gqlgen
+
 .PHONY: build
 build:
 	go mod download

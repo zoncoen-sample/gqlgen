@@ -17,9 +17,10 @@ const useStyles = makeStyles(theme => ({
 interface Props {
   key: string;
   text: string;
+  onDelete: () => void;
 }
 
-export const TodoListItem = ({key, text}: Props) => {
+export const TodoListItem = ({key, text, onDelete}: Props) => {
   const classes = useStyles();
   return (
     <ListItem key={key}>
@@ -27,7 +28,11 @@ export const TodoListItem = ({key, text}: Props) => {
         <Checkbox />
         {text}
         <IconButton className={classes.icon}>
-          <Delete />
+          <Delete
+            onClick={e => {
+              onDelete();
+            }}
+          />
         </IconButton>
       </Paper>
     </ListItem>
