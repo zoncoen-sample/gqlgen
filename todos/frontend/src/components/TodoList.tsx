@@ -1,24 +1,38 @@
 import * as React from 'react';
+import {Grid, CircularProgress, List} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 
-import {useQuery} from '@apollo/react-hooks';
+import {TodoListItemContainer} from './TodoListItemContainer';
 
-import GET_TODOS from '../graphql/getTodos.graphql';
-import {
-  getTodos as GetTodos,
-  getTodos_todos as Todo,
-} from '../graphql/__generated__/getTodos';
+interface Todo {
+  id: string;
+  text: string;
+}
 
-export const TodoList = () => {
-  const {loading, data} = useQuery<GetTodos, Todo>(GET_TODOS, {});
+interface Props {
+  loading: boolean;
+  todos?: Todo[];
+}
+
+const useStyles = makeStyles(theme => ({
+  progress: {
+    marginTop: theme.spacing(5),
+  },
+}));
+
+export const TodoList = ({loading, todos}: Props) => {
+  const classes = useStyles();
   return loading ? (
-    <p>Loading ...</p>
+    <Grid container justify="center">
+      <CircularProgress className={classes.progress} />
+    </Grid>
   ) : (
     <div>
-      <ul>
-        {data?.todos.map(todo => {
-          return <li key={todo.id}>{todo.text}</li>;
-        })}
-      </ul>
+      <List>
+        {todos?.map(todo => (
+          <TodoListItemContainer key={todo.id} text={todo.text} />
+        ))}
+      </List>
     </div>
   );
 };

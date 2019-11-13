@@ -1,43 +1,35 @@
-import React, {useState} from 'react';
+import * as React from 'react';
+import {Input} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 
-import {useMutation} from '@apollo/react-hooks';
+interface Props {
+  text: string;
+  onChange: (text: string) => void;
+  onSubmit: () => void;
+}
 
-import CREATE_TODO from '../graphql/createTodo.graphql';
-import GET_TODOS from '../graphql/getTodos.graphql';
-import {
-  createTodo as CreateTodo,
-  createTodoVariables as CreateTodoVars,
-} from '../graphql/__generated__/createTodo';
+const useStyles = makeStyles(theme => ({
+  input: {
+    'margin-bottom': theme.spacing(2),
+  },
+}));
 
-export const TodoForm = () => {
-  const [text, setText] = useState('');
-  const [createTodo, {error, data}] = useMutation<CreateTodo, CreateTodoVars>(
-    CREATE_TODO,
-    {
-      variables: {input: {text: text, userId: '0'}},
-      refetchQueries: [{query: GET_TODOS}],
-    },
-  );
+export const TodoForm = ({text, onChange, onSubmit}: Props) => {
+  const classes = useStyles();
   return (
     <form
       onSubmit={e => {
         e.preventDefault();
-        if (text === '') {
-          return;
-        }
-        createTodo()
-          .then(res => {
-            setText('');
-          })
-          .catch(err => {
-            console.error(err);
-          });
+        onSubmit();
       }}>
-      <input
+      <Input
         value={text}
         onChange={e => {
-          setText(e.target.value);
+          onChange(e.target.value);
         }}
+        autoFocus
+        fullWidth
+        className={classes.input}
       />
     </form>
   );

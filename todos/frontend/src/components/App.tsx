@@ -1,12 +1,16 @@
 import * as React from 'react';
+import {Container} from '@material-ui/core';
 
-import {TodoForm} from './TodoForm';
-import {TodoList} from './TodoList';
+import {Title} from './Title';
+import {TodoFormContainer} from './TodoFormContainer';
+import {TodoListContainer} from './TodoListContainer';
 
 export const App = () => (
   <div>
-    <h2>Todos</h2>
-    <TodoForm />
-    <TodoList />
+    <Container maxWidth="md">
+      <Title />
+      <TodoFormContainer />
+      <TodoListContainer />
+    </Container>
   </div>
 );
