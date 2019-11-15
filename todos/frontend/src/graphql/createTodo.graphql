@@ -1,11 +1,13 @@
-mutation createTodo($input: NewTodo!) {
+mutation createTodo($input: CreateTodoInput!) {
   createTodo(input: $input) {
-    id
-    text
-    done
-    user {
+    todo {
       id
-      name
+      text
+      done
+      user {
+        id
+        name
+      }
     }
   }
 }

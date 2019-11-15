@@ -2,24 +2,29 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { NewTodo } from "./globalTypes";
+import { CreateTodoInput } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: createTodo
 // ====================================================
 
-export interface createTodo_createTodo_user {
+export interface createTodo_createTodo_todo_user {
   __typename: "User";
   id: string;
   name: string;
 }
 
-export interface createTodo_createTodo {
+export interface createTodo_createTodo_todo {
   __typename: "Todo";
   id: string;
   text: string;
   done: boolean;
-  user: createTodo_createTodo_user;
+  user: createTodo_createTodo_todo_user;
+}
+
+export interface createTodo_createTodo {
+  __typename: "CreateTodoPayload";
+  todo: createTodo_createTodo_todo;
 }
 
 export interface createTodo {
@@ -27,5 +32,5 @@ export interface createTodo {
 }
 
 export interface createTodoVariables {
-  input: NewTodo;
+  input: CreateTodoInput;
 }

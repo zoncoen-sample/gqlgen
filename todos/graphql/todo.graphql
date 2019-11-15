@@ -1,0 +1,47 @@
+extend type Query {
+  todos(first: Int!, after: String): TodoConnection!
+}
+
+type TodoConnection {
+  pageInfo: PageInfo!
+  edges: [TodoEdge!]!
+  nodes: [Todo!]!
+}
+
+type TodoEdge {
+  cursor: String!
+  node: Todo!
+}
+
+type Todo implements Node {
+  id: ID!
+  text: String!
+  done: Boolean!
+  user: User!
+}
+
+extend type Mutation {
+  createTodo(input: CreateTodoInput!): CreateTodoPayload!
+  deleteTodo(input: DeleteTodoInput!): DeleteTodoPayload!
+}
+
+input CreateTodoInput {
+  clientMutationId: String!
+  text: String!
+  userId: String!
+}
+
+type CreateTodoPayload {
+  clientMutationId: String!
+  todo: Todo!
+}
+
+input DeleteTodoInput {
+  clientMutationId: String!
+  id: ID!
+}
+
+type DeleteTodoPayload {
+  clientMutationId: String!
+  id: ID!
+}

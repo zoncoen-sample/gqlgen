@@ -6,3 +6,5 @@ type Todo struct {
 	Done   bool   `json:"done"`
 	UserID string `json:"userId"`
 }
+
+func (_ *Todo) IsNode() {}

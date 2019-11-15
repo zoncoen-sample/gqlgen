@@ -30,7 +30,7 @@ export const TodoList = ({loading, todos}: Props) => {
     <div>
       <List>
         {todos?.map(todo => (
-          <TodoListItemContainer id={todo.id} text={todo.text} />
+          <TodoListItemContainer key={todo.id} id={todo.id} text={todo.text} />
         ))}
       </List>
     </div>

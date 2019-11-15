@@ -6,9 +6,15 @@
 // START Enums and Input Objects
 //==============================================================
 
-export interface NewTodo {
+export interface CreateTodoInput {
+  clientMutationId: string;
   text: string;
   userId: string;
+}
+
+export interface DeleteTodoInput {
+  clientMutationId: string;
+  id: string;
 }
 
 //==============================================================

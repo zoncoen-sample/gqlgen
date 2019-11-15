@@ -1,3 +1,5 @@
+import UUID from 'uuid';
+
 import * as React from 'react';
 
 import {useMutation} from '@apollo/react-hooks';
@@ -17,8 +19,8 @@ interface Props {
 
 export const TodoListItemContainer = ({id, text}: Props) => {
   const [deleteTodo] = useMutation<DeleteTodo, DeleteTodoVars>(DELETE_TODO, {
-    variables: {id: id},
-    refetchQueries: [{query: GET_TODOS}],
+    variables: {input: {clientMutationId: UUID.v4(), id: id}},
+    refetchQueries: [{query: GET_TODOS, variables: {first: 1000}}],
   });
-  return <TodoListItem key={id} text={text} onDelete={deleteTodo} />;
+  return <TodoListItem text={text} onDelete={deleteTodo} />;
 };

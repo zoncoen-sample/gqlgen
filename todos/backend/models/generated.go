@@ -2,12 +2,60 @@
 
 package models
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Node interface {
+	IsNode()
+}
+
+type CreateTodoInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+	Text             string `json:"text"`
+	UserID           string `json:"userId"`
+}
+
+type CreateTodoPayload struct {
+	ClientMutationID string `json:"clientMutationId"`
+	Todo             *Todo  `json:"todo"`
+}
+
+type DeleteTodoInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+	ID               string `json:"id"`
+}
+
+type DeleteTodoPayload struct {
+	ClientMutationID string `json:"clientMutationId"`
+	ID               string `json:"id"`
+}
+
+type NoopInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+}
+
+type NoopPayload struct {
+	ClientMutationID string `json:"clientMutationId"`
+}
+
+type PageInfo struct {
+	HasNextPage     bool    `json:"hasNextPage"`
+	HasPreviousPage bool    `json:"hasPreviousPage"`
+	StartCursor     *string `json:"startCursor"`
+	EndCursor       *string `json:"endCursor"`
+}
+
+type TodoConnection struct {
+	PageInfo *PageInfo   `json:"pageInfo"`
+	Edges    []*TodoEdge `json:"edges"`
+	Nodes    []*Todo     `json:"nodes"`
+}
+
+type TodoEdge struct {
+	Cursor string `json:"cursor"`
+	Node   *Todo  `json:"node"`
 }
 
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+func (User) IsNode() {}

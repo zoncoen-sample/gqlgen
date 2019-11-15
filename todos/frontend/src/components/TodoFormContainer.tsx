@@ -1,3 +1,5 @@
+import UUID from 'uuid';
+
 import React, {useState} from 'react';
 
 import {useMutation} from '@apollo/react-hooks';
@@ -15,8 +17,14 @@ export const TodoFormContainer = () => {
   const [createTodo, {}] = useMutation<CreateTodo, CreateTodoVars>(
     CREATE_TODO,
     {
-      variables: {input: {text: text, userId: '0'}},
-      refetchQueries: [{query: GET_TODOS}],
+      variables: {
+        input: {
+          clientMutationId: UUID.v4(),
+          text: text,
+          userId: '0',
+        },
+      },
+      refetchQueries: [{query: GET_TODOS, variables: {first: 1000}}],
     },
   );
   return (

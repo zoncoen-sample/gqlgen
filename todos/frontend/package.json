@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "watch": "webpack --watch",
-    "gen": "apollo client:codegen --target typescript --localSchemaFile ../graphql/schema.graphql --includes './src/**/*.graphql' --outputFlat src/graphql/__generated__"
+    "gen": "apollo client:codegen --target typescript --localSchemaFile '../graphql/schema.graphql,../graphql/todo.graphql,../graphql/user.graphql' --includes './src/**/*.graphql' --outputFlat src/graphql/__generated__"
   },
   "author": "zoncoen",
   "license": "MIT",
@@ -21,11 +21,13 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
+    "@types/uuid": "^3.4.6",
     "apollo": "^2.21.0",
     "path": "^0.12.7",
     "prettier": "^1.19.1",

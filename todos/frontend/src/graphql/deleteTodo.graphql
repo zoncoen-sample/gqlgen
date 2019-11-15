@@ -1,3 +1,5 @@
-mutation deleteTodo($id: ID!) {
-  deleteTodo(id: $id)
+mutation deleteTodo($input: DeleteTodoInput!) {
+  deleteTodo(input: $input) {
+    id
+  }
 }

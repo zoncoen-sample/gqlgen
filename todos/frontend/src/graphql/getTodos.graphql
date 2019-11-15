@@ -1,11 +1,13 @@
-query getTodos {
-  todos {
-    id
-    text
-    done
-    user {
+query getTodos($first: Int!, $after: String) {
+  todos(first: $first, after: $after) {
+    nodes {
       id
-      name
+      text
+      done
+      user {
+        id
+        name
+      }
     }
   }
 }

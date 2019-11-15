@@ -2,6 +2,7 @@ package todos
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/zoncoen-sample/gqlgen/todos/models"
@@ -25,30 +26,90 @@ func (r *Resolver) Todo() TodoResolver {
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input models.NewTodo) (*models.Todo, error) {
+func (r *mutationResolver) Noop(ctx context.Context, input *models.NoopInput) (*models.NoopPayload, error) {
+	return nil, nil
+}
+
+func (r *mutationResolver) CreateTodo(ctx context.Context, input models.CreateTodoInput) (*models.CreateTodoPayload, error) {
 	todo := &models.Todo{
 		ID:     uuid.New().String(),
 		Text:   input.Text,
 		UserID: input.UserID,
 	}
 	r.todos = append(r.todos, todo)
-	return todo, nil
+	return &models.CreateTodoPayload{
+		ClientMutationID: input.ClientMutationID,
+		Todo:             todo,
+	}, nil
 }
 
-func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*bool, error) {
+func (r *mutationResolver) DeleteTodo(ctx context.Context, input models.DeleteTodoInput) (*models.DeleteTodoPayload, error) {
 	for i, todo := range r.todos {
-		if todo.ID == id {
+		if todo.ID == input.ID {
 			r.todos = append(r.todos[:i], r.todos[i+1:]...)
-			return nil, nil
 		}
 	}
-	return nil, nil
+	return &models.DeleteTodoPayload{
+		ClientMutationID: input.ClientMutationID,
+		ID:               input.ID,
+	}, nil
 }
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*models.Todo, error) {
-	return r.todos, nil
+func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error) {
+	for _, todo := range r.todos {
+		todo := todo
+		if todo.ID == id {
+			return todo, nil
+		}
+	}
+	return nil, errors.New("not found")
+}
+
+func (r *queryResolver) Todos(ctx context.Context, first int, after *string) (*models.TodoConnection, error) {
+	todos := r.todos
+	pageInfo := &models.PageInfo{}
+	if after != nil {
+		var found bool
+		for i, todo := range todos {
+			todo := todo
+			if todo.ID == *after {
+				found = true
+				pageInfo.HasPreviousPage = true
+				todos = todos[i+1:]
+				break
+			}
+		}
+		if !found {
+			todos = todos[:0]
+		}
+	}
+	if len(todos) > first {
+		pageInfo.HasNextPage = true
+		todos = todos[:first]
+	}
+	if len(todos) > 0 {
+		pageInfo.StartCursor = &todos[0].ID
+		pageInfo.EndCursor = &todos[len(todos)-1].ID
+	}
+	return &models.TodoConnection{
+		PageInfo: pageInfo,
+		Edges:    toTodoEdges(todos),
+		Nodes:    todos,
+	}, nil
+}
+
+func toTodoEdges(todos []*models.Todo) []*models.TodoEdge {
+	edges := make([]*models.TodoEdge, len(todos))
+	for i, todo := range todos {
+		todo := todo
+		edges[i] = &models.TodoEdge{
+			Cursor: todo.ID,
+			Node:   todo,
+		}
+	}
+	return edges
 }
 
 type todoResolver struct{ *Resolver }
