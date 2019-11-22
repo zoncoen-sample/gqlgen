@@ -17,6 +17,12 @@ export interface DeleteTodoInput {
   id: string;
 }
 
+export interface ToggleTodoInput {
+  clientMutationId: string;
+  id: string;
+  done: boolean;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

@@ -53,6 +53,18 @@ type TodoEdge struct {
 	Node   *Todo  `json:"node"`
 }
 
+type ToggleTodoInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+	ID               string `json:"id"`
+	Done             bool   `json:"done"`
+}
+
+type ToggleTodoPayload struct {
+	ClientMutationID string `json:"clientMutationId"`
+	ID               string `json:"id"`
+	Done             bool   `json:"done"`
+}
+
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`

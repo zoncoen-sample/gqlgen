@@ -55,6 +55,18 @@ func (r *mutationResolver) DeleteTodo(ctx context.Context, input models.DeleteTo
 	}, nil
 }
 
+func (r *mutationResolver) ToggleTodo(ctx context.Context, input models.ToggleTodoInput) (*models.ToggleTodoPayload, error) {
+	for i, todo := range r.todos {
+		if todo.ID == input.ID {
+			r.todos[i].Done = input.Done
+		}
+	}
+	return &models.ToggleTodoPayload{
+		ID:   input.ID,
+		Done: input.Done,
+	}, nil
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error) {

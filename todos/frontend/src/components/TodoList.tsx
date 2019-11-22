@@ -7,6 +7,7 @@ import {TodoListItemContainer} from './TodoListItemContainer';
 interface Todo {
   id: string;
   text: string;
+  done: boolean;
 }
 
 interface Props {
@@ -30,7 +31,12 @@ export const TodoList = ({loading, todos}: Props) => {
     <div>
       <List>
         {todos?.map(todo => (
-          <TodoListItemContainer key={todo.id} id={todo.id} text={todo.text} />
+          <TodoListItemContainer
+            key={todo.id}
+            id={todo.id}
+            text={todo.text}
+            done={todo.done}
+          />
         ))}
       </List>
     </div>
