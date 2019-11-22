@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "watch": "webpack --watch",
-    "gen": "apollo client:codegen --target typescript --localSchemaFile '../graphql/schema.graphql,../graphql/todo.graphql,../graphql/user.graphql' --includes './src/**/*.graphql' --outputFlat src/graphql/__generated__"
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "author": "zoncoen",
   "license": "MIT",
@@ -25,6 +25,13 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.8.3",
+    "@graphql-codegen/fragment-matcher": "1.8.3",
+    "@graphql-codegen/introspection": "1.8.3",
+    "@graphql-codegen/typescript": "1.8.3",
+    "@graphql-codegen/typescript-graphql-files-modules": "1.8.3",
+    "@graphql-codegen/typescript-operations": "1.8.3",
+    "@graphql-codegen/typescript-react-apollo": "1.8.3",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/uuid": "^3.4.6",

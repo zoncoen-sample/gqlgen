@@ -1,0 +1,17 @@
+overwrite: true
+schema: "../graphql/**/*.graphql"
+documents: "src/**/*.graphql"
+generates:
+  src/graphql/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+      - "fragment-matcher"
+    config:
+      withHOC: false
+      withComponent: false
+      withHooks: true
+  types/graphql.d.ts:
+    plugins:
+      - "typescript-graphql-files-modules"

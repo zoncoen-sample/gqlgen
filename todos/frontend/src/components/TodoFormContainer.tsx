@@ -2,31 +2,22 @@ import UUID from 'uuid';
 
 import React, {useState} from 'react';
 
-import {useMutation} from '@apollo/react-hooks';
-
 import GET_TODOS from '../graphql/getTodos.graphql';
-import CREATE_TODO from '../graphql/createTodo.graphql';
-import {
-  createTodo as CreateTodo,
-  createTodoVariables as CreateTodoVars,
-} from '../graphql/__generated__/createTodo';
+import {useCreateTodoMutation} from '../graphql/generated/graphql';
 import {TodoForm} from './TodoForm';
 
 export const TodoFormContainer = () => {
   const [text, setText] = useState('');
-  const [createTodo, {}] = useMutation<CreateTodo, CreateTodoVars>(
-    CREATE_TODO,
-    {
-      variables: {
-        input: {
-          clientMutationId: UUID.v4(),
-          text: text,
-          userId: '0',
-        },
+  const [createTodo, {}] = useCreateTodoMutation({
+    variables: {
+      input: {
+        clientMutationId: UUID.v4(),
+        text: text,
+        userId: '0',
       },
-      refetchQueries: [{query: GET_TODOS, variables: {first: 1000}}],
     },
-  );
+    refetchQueries: [{query: GET_TODOS, variables: {first: 1000}}],
+  });
   return (
     <TodoForm
       text={text}
