@@ -24,7 +24,7 @@ type DeleteTodoInput struct {
 
 type DeleteTodoPayload struct {
 	ClientMutationID string `json:"clientMutationId"`
-	ID               string `json:"id"`
+	Todo             *Todo  `json:"todo"`
 }
 
 type NoopInput struct {
@@ -51,6 +51,17 @@ type TodoConnection struct {
 type TodoEdge struct {
 	Cursor string `json:"cursor"`
 	Node   *Todo  `json:"node"`
+}
+
+type ToggleTodoInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+	ID               string `json:"id"`
+	Done             bool   `json:"done"`
+}
+
+type ToggleTodoPayload struct {
+	ClientMutationID string `json:"clientMutationId"`
+	Todo             *Todo  `json:"todo"`
 }
 
 type User struct {

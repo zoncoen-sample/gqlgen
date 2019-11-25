@@ -1,5 +1,7 @@
 mutation deleteTodo($input: DeleteTodoInput!) {
   deleteTodo(input: $input) {
-    id
+    todo {
+      id
+    }
   }
 }

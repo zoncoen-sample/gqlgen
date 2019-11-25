@@ -2,8 +2,12 @@ import UUID from 'uuid';
 
 import React, {useState} from 'react';
 
-import GET_TODOS from '../graphql/getTodos.graphql';
-import {useCreateTodoMutation} from '../graphql/generated/graphql';
+import {
+  useCreateTodoMutation,
+  GetTodosDocument,
+  GetTodosQuery,
+  GetTodosQueryVariables,
+} from '../graphql/generated/graphql';
 import {TodoForm} from './TodoForm';
 
 export const TodoFormContainer = () => {
@@ -16,7 +20,30 @@ export const TodoFormContainer = () => {
         userId: '0',
       },
     },
-    refetchQueries: [{query: GET_TODOS, variables: {first: 1000}}],
+    update: (cache, {data}) => {
+      if (data) {
+        const cacheData = cache.readQuery<
+          GetTodosQuery,
+          GetTodosQueryVariables
+        >({
+          query: GetTodosDocument,
+          variables: {first: 1000},
+        });
+        if (cacheData) {
+          cache.writeQuery<GetTodosQuery, GetTodosQueryVariables>({
+            query: GetTodosDocument,
+            variables: {first: 1000},
+            data: {
+              __typename: 'Query',
+              todos: {
+                __typename: 'TodoConnection',
+                nodes: [...cacheData.todos.nodes, data.createTodo.todo],
+              },
+            },
+          });
+        }
+      }
+    },
   });
   return (
     <TodoForm

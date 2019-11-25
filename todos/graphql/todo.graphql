@@ -23,6 +23,7 @@ type Todo implements Node {
 extend type Mutation {
   createTodo(input: CreateTodoInput!): CreateTodoPayload!
   deleteTodo(input: DeleteTodoInput!): DeleteTodoPayload!
+  toggleTodo(input: ToggleTodoInput!): ToggleTodoPayload!
 }
 
 input CreateTodoInput {
@@ -43,5 +44,16 @@ input DeleteTodoInput {
 
 type DeleteTodoPayload {
   clientMutationId: String!
+  todo: Todo!
+}
+
+input ToggleTodoInput {
+  clientMutationId: String!
   id: ID!
+  done: Boolean!
+}
+
+type ToggleTodoPayload {
+  clientMutationId: String!
+  todo: Todo!
 }

@@ -16,15 +16,17 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
   text: string;
+  done: boolean;
   onDelete: () => void;
+  onToggle: () => void;
 }
 
-export const TodoListItem = ({text, onDelete}: Props) => {
+export const TodoListItem = ({text, done, onDelete, onToggle}: Props) => {
   const classes = useStyles();
   return (
     <ListItem>
       <Paper className={classes.paper}>
-        <Checkbox />
+        <Checkbox checked={done} onClick={onToggle} />
         {text}
         <IconButton
           className={classes.icon}

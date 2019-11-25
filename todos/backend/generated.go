@@ -52,13 +52,14 @@ type ComplexityRoot struct {
 
 	DeleteTodoPayload struct {
 		ClientMutationID func(childComplexity int) int
-		ID               func(childComplexity int) int
+		Todo             func(childComplexity int) int
 	}
 
 	Mutation struct {
 		CreateTodo func(childComplexity int, input models.CreateTodoInput) int
 		DeleteTodo func(childComplexity int, input models.DeleteTodoInput) int
 		Noop       func(childComplexity int, input *models.NoopInput) int
+		ToggleTodo func(childComplexity int, input models.ToggleTodoInput) int
 	}
 
 	NoopPayload struct {
@@ -95,6 +96,11 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	ToggleTodoPayload struct {
+		ClientMutationID func(childComplexity int) int
+		Todo             func(childComplexity int) int
+	}
+
 	User struct {
 		ID   func(childComplexity int) int
 		Name func(childComplexity int) int
@@ -105,6 +111,7 @@ type MutationResolver interface {
 	Noop(ctx context.Context, input *models.NoopInput) (*models.NoopPayload, error)
 	CreateTodo(ctx context.Context, input models.CreateTodoInput) (*models.CreateTodoPayload, error)
 	DeleteTodo(ctx context.Context, input models.DeleteTodoInput) (*models.DeleteTodoPayload, error)
+	ToggleTodo(ctx context.Context, input models.ToggleTodoInput) (*models.ToggleTodoPayload, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
@@ -150,12 +157,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.DeleteTodoPayload.ClientMutationID(childComplexity), true
 
-	case "DeleteTodoPayload.id":
-		if e.complexity.DeleteTodoPayload.ID == nil {
+	case "DeleteTodoPayload.todo":
+		if e.complexity.DeleteTodoPayload.Todo == nil {
 			break
 		}
 
-		return e.complexity.DeleteTodoPayload.ID(childComplexity), true
+		return e.complexity.DeleteTodoPayload.Todo(childComplexity), true
 
 	case "Mutation.createTodo":
 		if e.complexity.Mutation.CreateTodo == nil {
@@ -192,6 +199,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Noop(childComplexity, args["input"].(*models.NoopInput)), true
+
+	case "Mutation.toggleTodo":
+		if e.complexity.Mutation.ToggleTodo == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_toggleTodo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ToggleTodo(childComplexity, args["input"].(models.ToggleTodoInput)), true
 
 	case "NoopPayload.clientMutationId":
 		if e.complexity.NoopPayload.ClientMutationID == nil {
@@ -314,6 +333,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TodoEdge.Node(childComplexity), true
+
+	case "ToggleTodoPayload.clientMutationId":
+		if e.complexity.ToggleTodoPayload.ClientMutationID == nil {
+			break
+		}
+
+		return e.complexity.ToggleTodoPayload.ClientMutationID(childComplexity), true
+
+	case "ToggleTodoPayload.todo":
+		if e.complexity.ToggleTodoPayload.Todo == nil {
+			break
+		}
+
+		return e.complexity.ToggleTodoPayload.Todo(childComplexity), true
 
 	case "User.id":
 		if e.complexity.User.ID == nil {
@@ -443,6 +476,7 @@ type Todo implements Node {
 extend type Mutation {
   createTodo(input: CreateTodoInput!): CreateTodoPayload!
   deleteTodo(input: DeleteTodoInput!): DeleteTodoPayload!
+  toggleTodo(input: ToggleTodoInput!): ToggleTodoPayload!
 }
 
 input CreateTodoInput {
@@ -463,7 +497,18 @@ input DeleteTodoInput {
 
 type DeleteTodoPayload {
   clientMutationId: String!
+  todo: Todo!
+}
+
+input ToggleTodoInput {
+  clientMutationId: String!
   id: ID!
+  done: Boolean!
+}
+
+type ToggleTodoPayload {
+  clientMutationId: String!
+  todo: Todo!
 }
 `},
 	&ast.Source{Name: "../graphql/user.graphql", Input: `type User implements Node {
@@ -511,6 +556,20 @@ func (ec *executionContext) field_Mutation_noop_args(ctx context.Context, rawArg
 	var arg0 *models.NoopInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalONoopInput2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐNoopInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_toggleTodo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.ToggleTodoInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNToggleTodoInput2githubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐToggleTodoInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -716,7 +775,7 @@ func (ec *executionContext) _DeleteTodoPayload_clientMutationId(ctx context.Cont
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DeleteTodoPayload_id(ctx context.Context, field graphql.CollectedField, obj *models.DeleteTodoPayload) (ret graphql.Marshaler) {
+func (ec *executionContext) _DeleteTodoPayload_todo(ctx context.Context, field graphql.CollectedField, obj *models.DeleteTodoPayload) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -735,7 +794,7 @@ func (ec *executionContext) _DeleteTodoPayload_id(ctx context.Context, field gra
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Todo, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -747,10 +806,10 @@ func (ec *executionContext) _DeleteTodoPayload_id(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*models.Todo)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNTodo2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_noop(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -880,6 +939,50 @@ func (ec *executionContext) _Mutation_deleteTodo(ctx context.Context, field grap
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNDeleteTodoPayload2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐDeleteTodoPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_toggleTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_toggleTodo_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ToggleTodo(rctx, args["input"].(models.ToggleTodoInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.ToggleTodoPayload)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNToggleTodoPayload2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐToggleTodoPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _NoopPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *models.NoopPayload) (ret graphql.Marshaler) {
@@ -1537,6 +1640,80 @@ func (ec *executionContext) _TodoEdge_node(ctx context.Context, field graphql.Co
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Todo)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNTodo2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐTodo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ToggleTodoPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *models.ToggleTodoPayload) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "ToggleTodoPayload",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientMutationID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ToggleTodoPayload_todo(ctx context.Context, field graphql.CollectedField, obj *models.ToggleTodoPayload) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "ToggleTodoPayload",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Todo, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2851,6 +3028,36 @@ func (ec *executionContext) unmarshalInputNoopInput(ctx context.Context, obj int
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputToggleTodoInput(ctx context.Context, obj interface{}) (models.ToggleTodoInput, error) {
+	var it models.ToggleTodoInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "done":
+			var err error
+			it.Done, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2922,8 +3129,8 @@ func (ec *executionContext) _DeleteTodoPayload(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "id":
-			out.Values[i] = ec._DeleteTodoPayload_id(ctx, field, obj)
+		case "todo":
+			out.Values[i] = ec._DeleteTodoPayload_todo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2962,6 +3169,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteTodo":
 			out.Values[i] = ec._Mutation_deleteTodo(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "toggleTodo":
+			out.Values[i] = ec._Mutation_toggleTodo(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3200,6 +3412,38 @@ func (ec *executionContext) _TodoEdge(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "node":
 			out.Values[i] = ec._TodoEdge_node(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var toggleTodoPayloadImplementors = []string{"ToggleTodoPayload"}
+
+func (ec *executionContext) _ToggleTodoPayload(ctx context.Context, sel ast.SelectionSet, obj *models.ToggleTodoPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, toggleTodoPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ToggleTodoPayload")
+		case "clientMutationId":
+			out.Values[i] = ec._ToggleTodoPayload_clientMutationId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "todo":
+			out.Values[i] = ec._ToggleTodoPayload_todo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3711,6 +3955,24 @@ func (ec *executionContext) marshalNTodoEdge2ᚖgithubᚗcomᚋzoncoenᚑsample�
 		return graphql.Null
 	}
 	return ec._TodoEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNToggleTodoInput2githubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐToggleTodoInput(ctx context.Context, v interface{}) (models.ToggleTodoInput, error) {
+	return ec.unmarshalInputToggleTodoInput(ctx, v)
+}
+
+func (ec *executionContext) marshalNToggleTodoPayload2githubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐToggleTodoPayload(ctx context.Context, sel ast.SelectionSet, v models.ToggleTodoPayload) graphql.Marshaler {
+	return ec._ToggleTodoPayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNToggleTodoPayload2ᚖgithubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐToggleTodoPayload(ctx context.Context, sel ast.SelectionSet, v *models.ToggleTodoPayload) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ToggleTodoPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNUser2githubᚗcomᚋzoncoenᚑsampleᚋgqlgenᚋtodosᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {

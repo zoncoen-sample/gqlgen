@@ -7,11 +7,10 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-      - "fragment-matcher"
     config:
       withHOC: false
       withComponent: false
       withHooks: true
-  types/graphql.d.ts:
+  src/graphql/generated/fragmentTypes.json:
     plugins:
-      - "typescript-graphql-files-modules"
+      - fragment-matcher

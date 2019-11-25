@@ -45,14 +45,29 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input models.CreateTo
 
 func (r *mutationResolver) DeleteTodo(ctx context.Context, input models.DeleteTodoInput) (*models.DeleteTodoPayload, error) {
 	for i, todo := range r.todos {
+		todo := todo
 		if todo.ID == input.ID {
 			r.todos = append(r.todos[:i], r.todos[i+1:]...)
+			return &models.DeleteTodoPayload{
+				ClientMutationID: input.ClientMutationID,
+				Todo:             todo,
+			}, nil
 		}
 	}
-	return &models.DeleteTodoPayload{
-		ClientMutationID: input.ClientMutationID,
-		ID:               input.ID,
-	}, nil
+	return nil, errors.New("not found")
+}
+
+func (r *mutationResolver) ToggleTodo(ctx context.Context, input models.ToggleTodoInput) (*models.ToggleTodoPayload, error) {
+	for i, todo := range r.todos {
+		todo := todo
+		if todo.ID == input.ID {
+			r.todos[i].Done = input.Done
+			return &models.ToggleTodoPayload{
+				Todo: r.todos[i],
+			}, nil
+		}
+	}
+	return nil, errors.New("not found")
 }
 
 type queryResolver struct{ *Resolver }
