@@ -1,6 +1,6 @@
 import UUID from 'uuid';
 
-import * as React from 'react';
+import React from 'react';
 
 import {
   useDeleteTodoMutation,

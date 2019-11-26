@@ -1,0 +1,8 @@
+mutation setTodoVisibilities($input: SetTodoVisibilitiesInput!) {
+  setTodoVisibilities(input: $input) @client {
+    todoVisibilities {
+      todo
+      done
+    }
+  }
+}

@@ -27,6 +27,11 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.graphql$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
+      },
       // All output '.js' files will have any sourcemaps re-processed by
       // 'source-map-loader'.
       {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {ListItem, Paper, Checkbox, IconButton} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import {makeStyles} from '@material-ui/core/styles';
@@ -26,7 +26,7 @@ export const TodoListItem = ({text, done, onDelete, onToggle}: Props) => {
   return (
     <ListItem>
       <Paper className={classes.paper}>
-        <Checkbox checked={done} onClick={onToggle} />
+        <Checkbox checked={done} onClick={onToggle} color="primary" />
         {text}
         <IconButton
           className={classes.icon}

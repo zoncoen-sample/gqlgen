@@ -3,6 +3,7 @@ schema: "../graphql/**/*.graphql"
 documents: "src/**/*.graphql"
 generates:
   src/graphql/generated/graphql.ts:
+    schema: "src/graphql/schema.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -12,5 +13,6 @@ generates:
       withComponent: false
       withHooks: true
   src/graphql/generated/fragmentTypes.json:
+    schema: "src/graphql/schema.graphql"
     plugins:
       - fragment-matcher

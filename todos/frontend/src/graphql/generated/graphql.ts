@@ -40,6 +40,7 @@ export type Mutation = {
   createTodo: CreateTodoPayload,
   deleteTodo: DeleteTodoPayload,
   toggleTodo: ToggleTodoPayload,
+  setTodoVisibilities: SetTodoVisibilitiesPayload,
 };
 
 
@@ -60,6 +61,11 @@ export type MutationDeleteTodoArgs = {
 
 export type MutationToggleTodoArgs = {
   input: ToggleTodoInput
+};
+
+
+export type MutationSetTodoVisibilitiesArgs = {
+  input: SetTodoVisibilitiesInput
 };
 
 export type Node = {
@@ -87,6 +93,7 @@ export type Query = {
    __typename?: 'Query',
   node?: Maybe<Node>,
   todos: TodoConnection,
+  todoVisibilities: TodoVisibilities,
 };
 
 
@@ -98,6 +105,18 @@ export type QueryNodeArgs = {
 export type QueryTodosArgs = {
   first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
+};
+
+export type SetTodoVisibilitiesInput = {
+  clientMutationId: Scalars['String'],
+  todo: Scalars['Boolean'],
+  done: Scalars['Boolean'],
+};
+
+export type SetTodoVisibilitiesPayload = {
+   __typename?: 'SetTodoVisibilitiesPayload',
+  clientMutationId: Scalars['String'],
+  todoVisibilities: TodoVisibilities,
 };
 
 export type Todo = Node & {
@@ -119,6 +138,12 @@ export type TodoEdge = {
    __typename?: 'TodoEdge',
   cursor: Scalars['String'],
   node: Todo,
+};
+
+export type TodoVisibilities = {
+   __typename?: 'TodoVisibilities',
+  todo: Scalars['Boolean'],
+  done: Scalars['Boolean'],
 };
 
 export type ToggleTodoInput = {
@@ -175,6 +200,49 @@ export type DeleteTodoMutation = (
   ) }
 );
 
+export type SetTodoVisibilitiesMutationVariables = {
+  input: SetTodoVisibilitiesInput
+};
+
+
+export type SetTodoVisibilitiesMutation = (
+  { __typename?: 'Mutation' }
+  & { setTodoVisibilities: (
+    { __typename?: 'SetTodoVisibilitiesPayload' }
+    & { todoVisibilities: (
+      { __typename?: 'TodoVisibilities' }
+      & Pick<TodoVisibilities, 'todo' | 'done'>
+    ) }
+  ) }
+);
+
+export type ToggleTodoMutationVariables = {
+  input: ToggleTodoInput
+};
+
+
+export type ToggleTodoMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleTodo: (
+    { __typename?: 'ToggleTodoPayload' }
+    & { todo: (
+      { __typename?: 'Todo' }
+      & Pick<Todo, 'id' | 'done'>
+    ) }
+  ) }
+);
+
+export type GetTodoVisibilitiesQueryVariables = {};
+
+
+export type GetTodoVisibilitiesQuery = (
+  { __typename?: 'Query' }
+  & { todoVisibilities: (
+    { __typename?: 'TodoVisibilities' }
+    & Pick<TodoVisibilities, 'todo' | 'done'>
+  ) }
+);
+
 export type GetTodosQueryVariables = {
   first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
@@ -193,22 +261,6 @@ export type GetTodosQuery = (
         & Pick<User, 'id' | 'name'>
       ) }
     )> }
-  ) }
-);
-
-export type ToggleTodoMutationVariables = {
-  input: ToggleTodoInput
-};
-
-
-export type ToggleTodoMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleTodo: (
-    { __typename?: 'ToggleTodoPayload' }
-    & { todo: (
-      { __typename?: 'Todo' }
-      & Pick<Todo, 'id' | 'done'>
-    ) }
   ) }
 );
 
@@ -287,6 +339,109 @@ export function useDeleteTodoMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type DeleteTodoMutationHookResult = ReturnType<typeof useDeleteTodoMutation>;
 export type DeleteTodoMutationResult = ApolloReactCommon.MutationResult<DeleteTodoMutation>;
 export type DeleteTodoMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteTodoMutation, DeleteTodoMutationVariables>;
+export const SetTodoVisibilitiesDocument = gql`
+    mutation setTodoVisibilities($input: SetTodoVisibilitiesInput!) {
+  setTodoVisibilities(input: $input) @client {
+    todoVisibilities {
+      todo
+      done
+    }
+  }
+}
+    `;
+export type SetTodoVisibilitiesMutationFn = ApolloReactCommon.MutationFunction<SetTodoVisibilitiesMutation, SetTodoVisibilitiesMutationVariables>;
+
+/**
+ * __useSetTodoVisibilitiesMutation__
+ *
+ * To run a mutation, you first call `useSetTodoVisibilitiesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetTodoVisibilitiesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTodoVisibilitiesMutation, { data, loading, error }] = useSetTodoVisibilitiesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetTodoVisibilitiesMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetTodoVisibilitiesMutation, SetTodoVisibilitiesMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetTodoVisibilitiesMutation, SetTodoVisibilitiesMutationVariables>(SetTodoVisibilitiesDocument, baseOptions);
+      }
+export type SetTodoVisibilitiesMutationHookResult = ReturnType<typeof useSetTodoVisibilitiesMutation>;
+export type SetTodoVisibilitiesMutationResult = ApolloReactCommon.MutationResult<SetTodoVisibilitiesMutation>;
+export type SetTodoVisibilitiesMutationOptions = ApolloReactCommon.BaseMutationOptions<SetTodoVisibilitiesMutation, SetTodoVisibilitiesMutationVariables>;
+export const ToggleTodoDocument = gql`
+    mutation toggleTodo($input: ToggleTodoInput!) {
+  toggleTodo(input: $input) {
+    todo {
+      id
+      done
+    }
+  }
+}
+    `;
+export type ToggleTodoMutationFn = ApolloReactCommon.MutationFunction<ToggleTodoMutation, ToggleTodoMutationVariables>;
+
+/**
+ * __useToggleTodoMutation__
+ *
+ * To run a mutation, you first call `useToggleTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleTodoMutation, { data, loading, error }] = useToggleTodoMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleTodoMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ToggleTodoMutation, ToggleTodoMutationVariables>) {
+        return ApolloReactHooks.useMutation<ToggleTodoMutation, ToggleTodoMutationVariables>(ToggleTodoDocument, baseOptions);
+      }
+export type ToggleTodoMutationHookResult = ReturnType<typeof useToggleTodoMutation>;
+export type ToggleTodoMutationResult = ApolloReactCommon.MutationResult<ToggleTodoMutation>;
+export type ToggleTodoMutationOptions = ApolloReactCommon.BaseMutationOptions<ToggleTodoMutation, ToggleTodoMutationVariables>;
+export const GetTodoVisibilitiesDocument = gql`
+    query getTodoVisibilities {
+  todoVisibilities @client {
+    todo
+    done
+  }
+}
+    `;
+
+/**
+ * __useGetTodoVisibilitiesQuery__
+ *
+ * To run a query within a React component, call `useGetTodoVisibilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTodoVisibilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTodoVisibilitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTodoVisibilitiesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetTodoVisibilitiesQuery, GetTodoVisibilitiesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetTodoVisibilitiesQuery, GetTodoVisibilitiesQueryVariables>(GetTodoVisibilitiesDocument, baseOptions);
+      }
+export function useGetTodoVisibilitiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTodoVisibilitiesQuery, GetTodoVisibilitiesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetTodoVisibilitiesQuery, GetTodoVisibilitiesQueryVariables>(GetTodoVisibilitiesDocument, baseOptions);
+        }
+export type GetTodoVisibilitiesQueryHookResult = ReturnType<typeof useGetTodoVisibilitiesQuery>;
+export type GetTodoVisibilitiesLazyQueryHookResult = ReturnType<typeof useGetTodoVisibilitiesLazyQuery>;
+export type GetTodoVisibilitiesQueryResult = ApolloReactCommon.QueryResult<GetTodoVisibilitiesQuery, GetTodoVisibilitiesQueryVariables>;
 export const GetTodosDocument = gql`
     query getTodos($first: Int!, $after: String) {
   todos(first: $first, after: $after) {
@@ -329,38 +484,3 @@ export function useGetTodosLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHoo
 export type GetTodosQueryHookResult = ReturnType<typeof useGetTodosQuery>;
 export type GetTodosLazyQueryHookResult = ReturnType<typeof useGetTodosLazyQuery>;
 export type GetTodosQueryResult = ApolloReactCommon.QueryResult<GetTodosQuery, GetTodosQueryVariables>;
-export const ToggleTodoDocument = gql`
-    mutation toggleTodo($input: ToggleTodoInput!) {
-  toggleTodo(input: $input) {
-    todo {
-      id
-      done
-    }
-  }
-}
-    `;
-export type ToggleTodoMutationFn = ApolloReactCommon.MutationFunction<ToggleTodoMutation, ToggleTodoMutationVariables>;
-
-/**
- * __useToggleTodoMutation__
- *
- * To run a mutation, you first call `useToggleTodoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleTodoMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleTodoMutation, { data, loading, error }] = useToggleTodoMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleTodoMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ToggleTodoMutation, ToggleTodoMutationVariables>) {
-        return ApolloReactHooks.useMutation<ToggleTodoMutation, ToggleTodoMutationVariables>(ToggleTodoDocument, baseOptions);
-      }
-export type ToggleTodoMutationHookResult = ReturnType<typeof useToggleTodoMutation>;
-export type ToggleTodoMutationResult = ApolloReactCommon.MutationResult<ToggleTodoMutation>;
-export type ToggleTodoMutationOptions = ApolloReactCommon.BaseMutationOptions<ToggleTodoMutation, ToggleTodoMutationVariables>;

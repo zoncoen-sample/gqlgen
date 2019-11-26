@@ -1,0 +1,6 @@
+query getTodoVisibilities {
+  todoVisibilities @client {
+    todo
+    done
+  }
+}

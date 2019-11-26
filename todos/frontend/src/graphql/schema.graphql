@@ -1,0 +1,27 @@
+# This is a client-side schema.
+
+extend type Query {
+  todoVisibilities: TodoVisibilities!
+}
+
+extend type Mutation {
+  setTodoVisibilities(
+    input: SetTodoVisibilitiesInput!
+  ): SetTodoVisibilitiesPayload!
+}
+
+type TodoVisibilities {
+  todo: Boolean!
+  done: Boolean!
+}
+
+input SetTodoVisibilitiesInput {
+  clientMutationId: String!
+  todo: Boolean!
+  done: Boolean!
+}
+
+type SetTodoVisibilitiesPayload {
+  clientMutationId: String!
+  todoVisibilities: TodoVisibilities!
+}
